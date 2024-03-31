@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:my_app1/utils/My_Routes.dart';
 import 'package:my_app1/widget/Home_page.dart';
 import 'package:my_app1/widget/login_page.dart';
 import 'package:my_app1/widget/class2.dart';
@@ -20,8 +21,10 @@ class MyApp extends StatelessWidget {
       // home: CounterScreen(),
       routes: {
         "/":(context)=>login(),
-        "/login":(content)=>login(),
-        "/home":(content)=>home(),
+        MyRoutes.loginRoute:(content)=>login(),
+        MyRoutes.homeRoute:(content)=>home(),
+        // "/login":(content)=>login(),
+        // "/home":(content)=>home(),
       },
     );
   }
