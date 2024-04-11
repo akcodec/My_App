@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:my_app1/utils/My_Routes.dart';
 import 'package:my_app1/widget/Home_page.dart';
@@ -11,21 +14,52 @@ class _loginState extends State<login> {
   String name="";
   bool changebutton=false;
   //for global
-  final _formkey=GlobalKey<FormState>();
 
-  moveToHome(BuildContext context) async{
+  // final _formkey=GlobalKey<FormState>();
+  //
+  // moveToHome(BuildContext context) async{
+  //
+  //  if(_formkey.currentState!.validate())
+  //    {
+  //      setState(() {
+  //        changebutton=true;
+  //      });
+  //      await Future.delayed(Duration(seconds: 1));
+  //      await Navigator.pushNamed(context, MyRoutes.homeRoute);
+  //      setState(() {
+  //        changebutton=false;
+  //      });
+  //    }
+  //
+  // }
+  TextEditingController emailcontroller=TextEditingController();
+  TextEditingController passwordcontroller=TextEditingController();
 
-   if(_formkey.currentState!.validate())
-     {
-       setState(() {
-         changebutton=true;
-       });
-       await Future.delayed(Duration(seconds: 1));
-       await Navigator.pushNamed(context, MyRoutes.homeRoute);
-       setState(() {
-         changebutton=false;
-       });
-     }
+
+  void signAccount() async{
+    String email=emailcontroller.text.trim();
+    String password=passwordcontroller.text.trim();
+
+    if(email=="" || password=="") {
+      log("fill all the details");
+    }
+
+    else{
+      try
+      {
+        UserCredential userCredential = await
+        FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: email, password: password);
+        // if(userCredential!=null){
+        await Navigator.pushNamed(context, MyRoutes.homeRoute);
+        // }
+        log("user loged in");
+      }
+      on FirebaseAuthException catch(ex){
+
+        log(ex.code.toString());
+      }
+    }
 
   }
 
@@ -35,7 +69,7 @@ class _loginState extends State<login> {
       color: Colors.white,
       child: SingleChildScrollView(
         child: Form(
-          key: _formkey,
+          // key: _formkey,
           child: Column(
             children: [
               Image.asset("assets/images/hey.png",
@@ -54,9 +88,10 @@ class _loginState extends State<login> {
                 child: Column(
                   children: [
                    TextFormField(
+                     controller:emailcontroller,
                       decoration: InputDecoration(
-                        hintText: "Username",
-                        labelText: "Enter Username",
+                        hintText: "Email",
+                        labelText: "Enter Email",
                       ),
                      validator: (value){
                        if(value == null || value.isEmpty) {
@@ -75,6 +110,7 @@ class _loginState extends State<login> {
                    ),
 
                     TextFormField(
+                      controller: passwordcontroller,
                       decoration: InputDecoration(
                         hintText: "Password",
                         labelText: "Enter Password",
@@ -112,7 +148,7 @@ class _loginState extends State<login> {
                   // },
                   //splashColor: Colors.red,
                   //new page pe jaane ke liye ontap me await future.delayed add krna padeaga
-                  onTap: () =>moveToHome(context),
+                  onTap: () =>signAccount(),
                   //AnimatedContainer is same as Conatainer but here we can add Animation where duration is **compulsory
                   //lekin hme decoration or accha krna h to hm Ink widget use kr skte h Animated container ki jgh
                   //jisme durtion and alignment htana padega
